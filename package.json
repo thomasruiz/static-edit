@@ -1,7 +1,7 @@
 {
   "name": "static-edit",
-  "version": "1.0.0",
-  "description": "A way to edit your static pages easily",
+  "version": "0.1.0",
+  "description": "A simple yet powerful static pages editor",
   "license": "MIT",
   "devDependencies": {
     "browserify": "^14.4.0",
