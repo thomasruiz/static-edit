@@ -1,6 +1,6 @@
 {
   "name": "static-edit",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A simple yet powerful static pages editor",
   "license": "MIT",
   "devDependencies": {
