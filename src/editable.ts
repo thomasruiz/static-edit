@@ -22,11 +22,13 @@ export abstract class Editable {
             input.value = this.elem.innerText
 
             input.addEventListener('blur',  () => {
-                this.elem.innerText = input.value
+                const oldValue = this.elem.innerText
+                const newValue = input.value
+                this.elem.innerText = newValue
                 input.parentNode.replaceChild(this.elem, input)
 
                 // Make sure that no one triggers a new click on an editable while this is running
-                setTimeout(() => this.editor.editionEnded(), 50)
+                setTimeout(() => this.editor.editionEnded(this.elem, oldValue, newValue), 100)
             })
 
             input.addEventListener('click', (e) => {

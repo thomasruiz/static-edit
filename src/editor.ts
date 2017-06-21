@@ -31,7 +31,10 @@ export class Editor {
         return true
     }
 
-    editionEnded() {
+    editionEnded(elem: HTMLElement, oldValue: string, newValue: string) {
         this.editing = false
+
+        let editionEnded = new CustomEvent('edition_ended', {detail: {elem, oldValue, newValue}})
+        window.dispatchEvent(editionEnded)
     }
 }

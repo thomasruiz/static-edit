@@ -19,6 +19,17 @@
     Multi-line hello world
 </p>
 
-<script src="../dist/bundle.js"></script>
+<script src="../dist/static-edit.js"></script>
+<script>
+    (function () {
+        var editor = new StaticEdit.Editor()
+
+        window.addEventListener('edition_ended', function (e) {
+            console.log('Edition done on elem: ', e.detail.elem)
+            console.log('Old value: "' + e.detail.oldValue + '"')
+            console.log('New value: "' + e.detail.newValue + '"')
+        })
+    })()
+</script>
 </body>
 </html>

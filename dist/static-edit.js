@@ -1,4 +1,4 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.StaticEdit = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -10,7 +10,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var editable_1 = require("./editable");
 var Block = (function (_super) {
     __extends(Block, _super);
@@ -26,7 +26,7 @@ exports.Block = Block;
 
 },{"./editable":2}],2:[function(require,module,exports){
 "use strict";
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var Editable = (function () {
     function Editable(elem, editor) {
         this.elem = elem;
@@ -43,10 +43,12 @@ var Editable = (function () {
             var input = _this.createField();
             input.value = _this.elem.innerText;
             input.addEventListener('blur', function () {
-                _this.elem.innerText = input.value;
+                var oldValue = _this.elem.innerText;
+                var newValue = input.value;
+                _this.elem.innerText = newValue;
                 input.parentNode.replaceChild(_this.elem, input);
                 // Make sure that no one triggers a new click on an editable while this is running
-                setTimeout(function () { return _this.editor.editionEnded(); }, 50);
+                setTimeout(function () { return _this.editor.editionEnded(_this.elem, oldValue, newValue); }, 100);
             });
             input.addEventListener('click', function (e) {
                 e.stopPropagation();
@@ -77,7 +79,7 @@ exports.Editable = Editable;
 
 },{}],3:[function(require,module,exports){
 "use strict";
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var block_1 = require("./block");
 var line_1 = require("./line");
 var Editor = (function () {
@@ -101,8 +103,10 @@ var Editor = (function () {
         this.editing = true;
         return true;
     };
-    Editor.prototype.editionEnded = function () {
+    Editor.prototype.editionEnded = function (elem, oldValue, newValue) {
         this.editing = false;
+        var editionEnded = new CustomEvent('edition_ended', { detail: { elem: elem, oldValue: oldValue, newValue: newValue } });
+        window.dispatchEvent(editionEnded);
     };
     return Editor;
 }());
@@ -120,7 +124,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var editable_1 = require("./editable");
 var Line = (function (_super) {
     __extends(Line, _super);
@@ -134,14 +138,7 @@ var Line = (function (_super) {
 }(editable_1.Editable));
 exports.Line = Line;
 
-},{"./editable":2}],5:[function(require,module,exports){
-"use strict";
-exports.__esModule = true;
-var editor_1 = require("./editor");
-(function () {
-    new editor_1.Editor();
-})();
+},{"./editable":2}]},{},[3])(3)
+});
 
-},{"./editor":3}]},{},[5])
-
-//# sourceMappingURL=bundle.js.map
+//# sourceMappingURL=static-edit.js.map
