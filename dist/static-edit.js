@@ -46,6 +46,7 @@ var Editable = (function () {
                 var oldValue = _this.elem.innerText;
                 var newValue = input.value;
                 _this.elem.innerText = newValue;
+                _this.changed = true;
                 input.parentNode.replaceChild(_this.elem, input);
                 // Make sure that no one triggers a new click on an editable while this is running
                 setTimeout(function () { return _this.editor.editionEnded(_this.elem, oldValue, newValue); }, 100);
@@ -73,6 +74,27 @@ var Editable = (function () {
             resize();
         }, true);
     };
+    Object.defineProperty(Editable.prototype, "value", {
+        get: function () {
+            return this.elem.textContent;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Editable.prototype, "element", {
+        get: function () {
+            return this.elem;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Editable.prototype, "hasChanged", {
+        get: function () {
+            return this.changed;
+        },
+        enumerable: true,
+        configurable: true
+    });
     return Editable;
 }());
 exports.Editable = Editable;
@@ -83,7 +105,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var block_1 = require("./block");
 var line_1 = require("./line");
 var Editor = (function () {
-    function Editor() {
+    function Editor(options) {
+        this.options = options;
+        this.elems = [];
         var elems = document.getElementsByClassName('editable');
         for (var i = 0; i < elems.length; ++i) {
             var elm = void 0;
@@ -94,8 +118,27 @@ var Editor = (function () {
                 elm = new line_1.Line(elems[i], this);
             }
             elm.bindEvents();
+            this.elems.push(elm);
         }
+        this.handleOptions();
     }
+    Editor.prototype.handleOptions = function () {
+        var _this = this;
+        if (this.options.saveButton === true) {
+            var button = document.createElement('button');
+            button.addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                var saving = new CustomEvent('static_edit.saving', { detail: { changed: _this.elems.filter(function (e) { return e.hasChanged; }) } });
+                window.dispatchEvent(saving);
+            });
+            button.textContent = 'Save';
+            button.style.position = 'absolute';
+            button.style.top = '20px';
+            button.style.left = '20px';
+            document.body.appendChild(button);
+        }
+    };
     Editor.prototype.editionStarted = function () {
         if (this.editing) {
             return false;
@@ -105,7 +148,7 @@ var Editor = (function () {
     };
     Editor.prototype.editionEnded = function (elem, oldValue, newValue) {
         this.editing = false;
-        var editionEnded = new CustomEvent('edition_ended', { detail: { elem: elem, oldValue: oldValue, newValue: newValue } });
+        var editionEnded = new CustomEvent('static_edit.edited', { detail: { elem: elem, oldValue: oldValue, newValue: newValue } });
         window.dispatchEvent(editionEnded);
     };
     return Editor;

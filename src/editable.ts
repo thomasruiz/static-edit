@@ -3,6 +3,7 @@ import { Editor } from './editor'
 export abstract class Editable {
     protected elem: HTMLElement
     protected editor: Editor
+    private changed: boolean
 
     constructor(elem: HTMLElement, editor: Editor) {
         this.elem = elem
@@ -21,10 +22,11 @@ export abstract class Editable {
             const input = this.createField()
             input.value = this.elem.innerText
 
-            input.addEventListener('blur',  () => {
+            input.addEventListener('blur', () => {
                 const oldValue = this.elem.innerText
                 const newValue = input.value
                 this.elem.innerText = newValue
+                this.changed = true
                 input.parentNode.replaceChild(this.elem, input)
 
                 // Make sure that no one triggers a new click on an editable while this is running
@@ -61,4 +63,16 @@ export abstract class Editable {
     }
 
     abstract createField(): HTMLInputElement
+
+    get value(): string {
+        return this.elem.textContent
+    }
+
+    get element(): HTMLElement {
+        return this.elem
+    }
+
+    get hasChanged(): boolean {
+        return this.changed
+    }
 }

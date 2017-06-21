@@ -22,12 +22,18 @@
 <script src="../dist/static-edit.js"></script>
 <script>
     (function () {
-        var editor = new StaticEdit.Editor()
+        new StaticEdit.Editor({saveButton: true})
 
-        window.addEventListener('edition_ended', function (e) {
+        window.addEventListener('static_edit.edited', function (e) {
             console.log('Edition done on elem: ', e.detail.elem)
             console.log('Old value: "' + e.detail.oldValue + '"')
             console.log('New value: "' + e.detail.newValue + '"')
+        })
+
+        window.addEventListener('static_edit.saving', function (e) {
+            for (var elm of e.detail.changed) {
+                console.log("Elem changed: " + elm.value)
+            }
         })
     })()
 </script>
