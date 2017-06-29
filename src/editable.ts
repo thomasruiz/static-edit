@@ -54,6 +54,7 @@ export abstract class Editable {
 
             input.style.width = 'auto'
             input.style.height = this.elem.offsetHeight + 'px'
+            input.style.overflowY = "hidden"
             input.style.fontSize = window.getComputedStyle(this.elem).fontSize
 
             this.elem.parentNode.replaceChild(input, this.elem)

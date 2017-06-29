@@ -2,7 +2,7 @@ import { Block } from './block'
 import { Line } from './line'
 import { Editable } from './editable'
 
-type Options = {
+export type Options = {
     saveButton: boolean
 }
 

@@ -68,6 +68,7 @@ var Editable = (function () {
             input.addEventListener('keydown', delayedResize);
             input.style.width = 'auto';
             input.style.height = _this.elem.offsetHeight + 'px';
+            input.style.overflowY = "hidden";
             input.style.fontSize = window.getComputedStyle(_this.elem).fontSize;
             _this.elem.parentNode.replaceChild(input, _this.elem);
             input.focus();
