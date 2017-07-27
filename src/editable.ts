@@ -1,4 +1,4 @@
-import { Editor } from './editor'
+import {Editor} from './editor'
 
 export abstract class Editable {
     protected elem: HTMLElement
@@ -15,7 +15,7 @@ export abstract class Editable {
             e.stopPropagation()
             e.preventDefault()
 
-            if (!this.editor.editionStarted()) {
+            if (!this.editor.editionStarted(this.elem, this.elem.innerText)) {
                 return false
             }
 
@@ -25,6 +25,7 @@ export abstract class Editable {
             input.addEventListener('blur', () => {
                 const oldValue = this.elem.innerText
                 const newValue = input.value
+
                 this.elem.innerText = newValue
                 this.changed = true
                 input.parentNode.replaceChild(this.elem, input)

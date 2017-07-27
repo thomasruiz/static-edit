@@ -10,7 +10,7 @@ var Editable = (function () {
         this.elem.addEventListener('click', function (e) {
             e.stopPropagation();
             e.preventDefault();
-            if (!_this.editor.editionStarted()) {
+            if (!_this.editor.editionStarted(_this.elem, _this.elem.innerText)) {
                 return false;
             }
             var input = _this.createField();

@@ -1,24 +1,31 @@
-import { Block } from './block'
-import { Line } from './line'
-import { Editable } from './editable'
+import {Block} from './block'
+import {Line} from './line'
+import {Image} from './image'
+import {Editable} from './editable'
 
 export type Options = {
-    saveButton: boolean
+    saveButton: boolean,
+    selector: string,
 }
 
 export class Editor {
     private editing: boolean
     private elems: Editable[]
+    private selector: string = '.editable'
 
     constructor(private options: Options) {
+        this.handleOptions()
+
         this.elems = []
-        const elems: HTMLCollectionOf<Element> = document.getElementsByClassName('editable')
+        const elems: NodeListOf<Element> = document.querySelectorAll(this.selector)
 
         for (let i = 0; i < elems.length; ++i) {
             let elm: Editable
 
             if (elems[i].tagName === 'P') {
                 elm = new Block(<HTMLElement>elems[i], this)
+            } else if (elems[i].tagName === 'IMG') {
+                elm = new Image(<HTMLElement>elems[i], this)
             } else {
                 elm = new Line(<HTMLElement>elems[i], this)
             }
@@ -26,34 +33,44 @@ export class Editor {
             elm.bindEvents()
             this.elems.push(elm)
         }
-
-        this.handleOptions()
     }
 
     handleOptions() {
         if (this.options.saveButton === true) {
-            const button = document.createElement('button')
-            button.addEventListener('click', (e) => {
-                e.preventDefault()
-                e.stopPropagation()
-                let saving = new CustomEvent('static_edit.saving', {detail: {changed: this.elems.filter((e) => e.hasChanged)}})
-                window.dispatchEvent(saving)
-            })
+            this.createSaveButton()
+        }
 
-            button.textContent = 'Save'
-            button.style.position = 'absolute'
-            button.style.top = '20px'
-            button.style.left = '20px'
-            document.body.appendChild(button)
+        if (this.options.selector !== undefined) {
+            this.selector = this.options.selector
         }
     }
 
-    editionStarted() {
+    private createSaveButton() {
+        const button = document.createElement('button')
+        button.addEventListener('click', (e) => {
+            e.preventDefault()
+            e.stopPropagation()
+
+            window.dispatchEvent(
+                new CustomEvent('static_edit.saving', {detail: {changed: this.elems.filter((e) => e.hasChanged)}})
+            )
+        })
+
+        button.textContent = 'Save'
+        button.style.position = 'absolute'
+        button.style.top = '20px'
+        button.style.left = '20px'
+        document.body.appendChild(button)
+    }
+
+    editionStarted(elem: HTMLElement, oldValue: string) {
         if (this.editing) {
             return false
         }
 
         this.editing = true
+
+        window.dispatchEvent(new CustomEvent('static_edit.editing', {detail: {elem, oldValue}}))
 
         return true
     }
@@ -61,7 +78,6 @@ export class Editor {
     editionEnded(elem: HTMLElement, oldValue: string, newValue: string) {
         this.editing = false
 
-        let editionEnded = new CustomEvent('static_edit.edited', {detail: {elem, oldValue, newValue}})
-        window.dispatchEvent(editionEnded)
+        window.dispatchEvent(new CustomEvent('static_edit.edited', {detail: {elem, oldValue, newValue}}))
     }
 }

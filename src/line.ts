@@ -1,4 +1,4 @@
-import { Editable } from './editable'
+import {Editable} from './editable'
 
 export class Line extends Editable {
     createField(): HTMLInputElement {

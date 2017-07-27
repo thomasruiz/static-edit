@@ -37,7 +37,7 @@ var Editable = (function () {
         this.elem.addEventListener('click', function (e) {
             e.stopPropagation();
             e.preventDefault();
-            if (!_this.editor.editionStarted()) {
+            if (!_this.editor.editionStarted(_this.elem, _this.elem.innerText)) {
                 return false;
             }
             var input = _this.createField();
@@ -105,15 +105,21 @@ exports.Editable = Editable;
 Object.defineProperty(exports, "__esModule", { value: true });
 var block_1 = require("./block");
 var line_1 = require("./line");
+var image_1 = require("./image");
 var Editor = (function () {
     function Editor(options) {
         this.options = options;
+        this.selector = '.editable';
+        this.handleOptions();
         this.elems = [];
-        var elems = document.getElementsByClassName('editable');
+        var elems = document.querySelectorAll(this.selector);
         for (var i = 0; i < elems.length; ++i) {
             var elm = void 0;
             if (elems[i].tagName === 'P') {
                 elm = new block_1.Block(elems[i], this);
+            }
+            else if (elems[i].tagName === 'IMG') {
+                elm = new image_1.Image(elems[i], this);
             }
             else {
                 elm = new line_1.Line(elems[i], this);
@@ -121,42 +127,100 @@ var Editor = (function () {
             elm.bindEvents();
             this.elems.push(elm);
         }
-        this.handleOptions();
     }
     Editor.prototype.handleOptions = function () {
-        var _this = this;
         if (this.options.saveButton === true) {
-            var button = document.createElement('button');
-            button.addEventListener('click', function (e) {
-                e.preventDefault();
-                e.stopPropagation();
-                var saving = new CustomEvent('static_edit.saving', { detail: { changed: _this.elems.filter(function (e) { return e.hasChanged; }) } });
-                window.dispatchEvent(saving);
-            });
-            button.textContent = 'Save';
-            button.style.position = 'absolute';
-            button.style.top = '20px';
-            button.style.left = '20px';
-            document.body.appendChild(button);
+            this.createSaveButton();
+        }
+        if (this.options.selector !== undefined) {
+            this.selector = this.options.selector;
         }
     };
-    Editor.prototype.editionStarted = function () {
+    Editor.prototype.createSaveButton = function () {
+        var _this = this;
+        var button = document.createElement('button');
+        button.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            window.dispatchEvent(new CustomEvent('static_edit.saving', { detail: { changed: _this.elems.filter(function (e) { return e.hasChanged; }) } }));
+        });
+        button.textContent = 'Save';
+        button.style.position = 'absolute';
+        button.style.top = '20px';
+        button.style.left = '20px';
+        document.body.appendChild(button);
+    };
+    Editor.prototype.editionStarted = function (elem, oldValue) {
         if (this.editing) {
             return false;
         }
         this.editing = true;
+        window.dispatchEvent(new CustomEvent('static_edit.editing', { detail: { elem: elem, oldValue: oldValue } }));
         return true;
     };
     Editor.prototype.editionEnded = function (elem, oldValue, newValue) {
         this.editing = false;
-        var editionEnded = new CustomEvent('static_edit.edited', { detail: { elem: elem, oldValue: oldValue, newValue: newValue } });
-        window.dispatchEvent(editionEnded);
+        window.dispatchEvent(new CustomEvent('static_edit.edited', { detail: { elem: elem, oldValue: oldValue, newValue: newValue } }));
     };
     return Editor;
 }());
 exports.Editor = Editor;
 
-},{"./block":1,"./line":4}],4:[function(require,module,exports){
+},{"./block":1,"./image":4,"./line":5}],4:[function(require,module,exports){
+"use strict";
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var editable_1 = require("./editable");
+var Image = (function (_super) {
+    __extends(Image, _super);
+    function Image() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    Image.prototype.createField = function () {
+        var input = document.createElement('input');
+        input.type = 'file';
+        input.style.display = 'none';
+        return input;
+    };
+    Image.prototype.bindEvents = function () {
+        var _this = this;
+        this.elem.addEventListener('click', function (e) {
+            e.stopPropagation();
+            e.preventDefault();
+            var file = _this.createField();
+            file.addEventListener('change', function () {
+                var uploadedFile = file.files[0];
+                if (!!uploadedFile.type.match(/image.*/)) {
+                    var reader = new FileReader();
+                    reader.addEventListener('loadend', function (e) {
+                        var newValue = e.target.result;
+                        var oldValue = _this.elem.src;
+                        _this.elem.src = newValue;
+                        _this.elem.dataset.fileName = uploadedFile.name;
+                        _this.elem.parentNode.removeChild(file);
+                        setTimeout(function () { return _this.editor.editionEnded(_this.elem, oldValue, newValue); }, 100);
+                    });
+                    reader.readAsDataURL(uploadedFile);
+                }
+            });
+            _this.elem.parentNode.appendChild(file);
+            file.click();
+        }, true);
+    };
+    return Image;
+}(editable_1.Editable));
+exports.Image = Image;
+
+},{"./editable":2}],5:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
