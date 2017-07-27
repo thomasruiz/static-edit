@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Static Edit Example</title>
+</head>
+<body style="width: 600px; text-align: center;">
+<h1 class="editable">Welcome to static edit!</h1>
+<img class="editable" src="./cat.jpg" width="200">
+
+<p class="editable">On this page, you can live-edit everything. Try clicking on me, or on the cats!</p>
+<p class="editable">Don't forget to check the console for additional information about what is happening.</p>
+<p class="editable">The setup is really easy:</p>
+
+<xmp style="text-align: left;">
+    <script src="static-edit.min.js"></script>
+
+    <script>
+        (function () {
+            new StaticEdit.Editor({saveButton: true})
+
+            window.addEventListener('static_edit.edited', function (e) {
+                // This is when the edition ends
+            })
+
+            window.addEventListener('static_edit.editing', function (e) {
+                // This is when the edition starts
+            })
+
+            window.addEventListener('static_edit.saving', function (e) {
+                // This is when the button "save" is pressed
+            })
+        })()
+    </script>
+</xmp>
+
+<script src="static-edit.min.js"></script>
+<script>
+    (function () {
+        new StaticEdit.Editor({saveButton: true})
+
+        window.addEventListener('static_edit.edited', function (e) {
+            console.log('Edition done on elem: ', e.detail.elem)
+            console.log('Old value: "' + e.detail.oldValue + '"')
+            console.log('New value: "' + e.detail.newValue + '"')
+        })
+
+        window.addEventListener('static_edit.saving', function (e) {
+            for (var elm of e.detail.changed) {
+                console.log("Elem changed: " + elm.value)
+            }
+        })
+    })()
+</script>
+</body>
+</html>
