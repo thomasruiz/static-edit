@@ -11,10 +11,10 @@ For example:
 ```
 <p class="editable">Hello world!</p>
 <h1 class="editable">Foo Bar</h1>
+<img class="editable" src="img/my-img.png">
 
 ## COMING SOON
 
-<img class="editable" src="img/my-img.png">
 <div class="bg-editable" style="background-image: url(img/bg-img.png)"></div>
 ```
 
