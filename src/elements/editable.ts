@@ -18,6 +18,8 @@ export abstract class Editable {
         return this.changed
     }
 
+    abstract get value(): string
+
     abstract createField(): HTMLInputElement
 
     abstract bindEvents(): void

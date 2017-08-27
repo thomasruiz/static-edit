@@ -5,8 +5,6 @@ interface FileReaderEventTarget extends EventTarget {
 }
 
 export abstract class FileUpload extends Editable {
-    abstract get value(): string
-
     createField(): HTMLInputElement {
         const input = document.createElement('input')
 
