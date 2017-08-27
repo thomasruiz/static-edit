@@ -84,7 +84,7 @@ window.addEventListener('static_edit.saving', function (e) {
 })
 ```
 
-Elem is a class that have the following public method/properties:
+All the elements are instances of a class that have the following public methods/properties:
 
 ```typescript
 class Element {
