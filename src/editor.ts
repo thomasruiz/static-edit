@@ -53,24 +53,6 @@ export class Editor {
         }
     }
 
-    private createSaveButton() {
-        const button = document.createElement('button')
-        button.addEventListener('click', (e) => {
-            e.preventDefault()
-            e.stopPropagation()
-
-            window.dispatchEvent(
-                new CustomEvent('static_edit.saving', {detail: {changed: this.elems.filter((e) => e.hasChanged)}})
-            )
-        })
-
-        button.textContent = 'Save'
-        button.style.position = 'absolute'
-        button.style.top = '20px'
-        button.style.left = '20px'
-        document.body.appendChild(button)
-    }
-
     editionStarted(elem: HTMLElement, oldValue: string) {
         if (this.editing) {
             return false
@@ -87,5 +69,23 @@ export class Editor {
         this.editing = false
 
         window.dispatchEvent(new CustomEvent('static_edit.edited', {detail: {elem, oldValue, newValue}}))
+    }
+
+    private createSaveButton() {
+        const button = document.createElement('button')
+        button.addEventListener('click', (e) => {
+            e.preventDefault()
+            e.stopPropagation()
+
+            window.dispatchEvent(
+                new CustomEvent('static_edit.saving', {detail: {changed: this.elems.filter((e) => e.hasChanged)}})
+            )
+        })
+
+        button.textContent = 'Save'
+        button.style.position = 'absolute'
+        button.style.top = '20px'
+        button.style.left = '20px'
+        document.body.appendChild(button)
     }
 }

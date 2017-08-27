@@ -1,6 +1,10 @@
 import {Editable} from "./editable";
 
 export abstract class Text extends Editable {
+    get value(): string {
+        return this.elem.textContent
+    }
+
     bindEvents() {
         this.elem.addEventListener('click', (e) => {
             e.stopPropagation()
@@ -54,9 +58,5 @@ export abstract class Text extends Editable {
             input.focus()
             resize()
         }, true)
-    }
-
-    get value(): string {
-        return this.elem.textContent
     }
 }

@@ -10,9 +10,6 @@ export abstract class Editable {
         this.editor = editor
     }
 
-    abstract createField(): HTMLInputElement
-    abstract bindEvents(): void
-
     get element(): HTMLElement {
         return this.elem
     }
@@ -20,4 +17,8 @@ export abstract class Editable {
     get hasChanged(): boolean {
         return this.changed
     }
+
+    abstract createField(): HTMLInputElement
+
+    abstract bindEvents(): void
 }

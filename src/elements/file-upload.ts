@@ -1,12 +1,11 @@
 import {Editable} from "./editable"
 
 interface FileReaderEventTarget extends EventTarget {
-    result:string
+    result: string
 }
 
 export abstract class FileUpload extends Editable {
     abstract get value(): string
-    protected abstract changeValue(value, name): void
 
     createField(): HTMLInputElement {
         const input = document.createElement('input')
@@ -47,4 +46,6 @@ export abstract class FileUpload extends Editable {
             file.click()
         })
     }
+
+    protected abstract changeValue(value, name): void
 }
