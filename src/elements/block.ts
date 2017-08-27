@@ -1,6 +1,6 @@
-import {Editable} from './editable'
+import {Text} from "./text";
 
-export class Block extends Editable {
+export class Block extends Text {
     createField(): HTMLInputElement {
         return <any>document.createElement('textarea')
     }

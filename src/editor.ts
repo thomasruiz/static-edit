@@ -1,7 +1,7 @@
-import {Block} from './block'
-import {Line} from './line'
-import {Image} from './image'
-import {Editable} from './editable'
+import {Block} from './elements/block'
+import {Line} from './elements/line'
+import {Image} from './elements/image'
+import {Editable} from './elements/editable'
 
 export type Options = {
     saveButton: boolean,

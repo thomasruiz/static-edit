@@ -1,15 +1,6 @@
-import {Editor} from './editor'
+import {Editable} from "./editable";
 
-export abstract class Editable {
-    protected elem: HTMLElement
-    protected editor: Editor
-    private changed: boolean
-
-    constructor(elem: HTMLElement, editor: Editor) {
-        this.elem = elem
-        this.editor = editor
-    }
-
+export abstract class Text extends Editable {
     bindEvents() {
         this.elem.addEventListener('click', (e) => {
             e.stopPropagation()
@@ -62,19 +53,5 @@ export abstract class Editable {
             input.focus()
             resize()
         }, true)
-    }
-
-    abstract createField(): HTMLInputElement
-
-    get value(): string {
-        return this.elem.textContent
-    }
-
-    get element(): HTMLElement {
-        return this.elem
-    }
-
-    get hasChanged(): boolean {
-        return this.changed
     }
 }

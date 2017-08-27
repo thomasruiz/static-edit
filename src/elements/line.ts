@@ -1,6 +1,6 @@
-import {Editable} from './editable'
+import {Text} from "./text";
 
-export class Line extends Editable {
+export class Line extends Text {
     createField(): HTMLInputElement {
         return document.createElement('input')
     }
