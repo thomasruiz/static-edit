@@ -5,6 +5,7 @@ export abstract class Text extends Editable {
         this.elem.addEventListener('click', (e) => {
             e.stopPropagation()
             e.preventDefault()
+            e.cancelBubble = true
 
             if (!this.editor.editionStarted(this.elem, this.elem.innerText)) {
                 return false
@@ -32,7 +33,7 @@ export abstract class Text extends Editable {
 
             let resize = () => {
                 input.style.height = 'auto'
-                input.style.height = input.scrollHeight + 'px'
+                input.style.height = `${input.scrollHeight}px`
             }
 
             // Workaround for cut, paste, drop and keydown
@@ -45,7 +46,7 @@ export abstract class Text extends Editable {
             input.addEventListener('keydown', delayedResize)
 
             input.style.width = 'auto'
-            input.style.height = this.elem.offsetHeight + 'px'
+            input.style.height = `${this.elem.offsetHeight}px`
             input.style.overflowY = "hidden"
             input.style.fontSize = window.getComputedStyle(this.elem).fontSize
 
@@ -53,5 +54,9 @@ export abstract class Text extends Editable {
             input.focus()
             resize()
         }, true)
+    }
+
+    get value(): string {
+        return this.elem.textContent
     }
 }

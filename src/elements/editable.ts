@@ -13,10 +13,6 @@ export abstract class Editable {
     abstract createField(): HTMLInputElement
     abstract bindEvents(): void
 
-    get value(): string {
-        return this.elem.textContent
-    }
-
     get element(): HTMLElement {
         return this.elem
     }

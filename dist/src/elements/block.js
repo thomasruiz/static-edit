@@ -10,7 +10,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var editable_1 = require("./editable");
+var text_1 = require("./text");
 var Block = (function (_super) {
     __extends(Block, _super);
     function Block() {
@@ -20,5 +20,5 @@ var Block = (function (_super) {
         return document.createElement('textarea');
     };
     return Block;
-}(editable_1.Editable));
+}(text_1.Text));
 exports.Block = Block;

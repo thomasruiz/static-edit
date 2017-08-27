@@ -1,15 +1,27 @@
 "use strict";
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
-var Editable = (function () {
-    function Editable(elem, editor) {
-        this.elem = elem;
-        this.editor = editor;
+var editable_1 = require("./editable");
+var Text = (function (_super) {
+    __extends(Text, _super);
+    function Text() {
+        return _super !== null && _super.apply(this, arguments) || this;
     }
-    Editable.prototype.bindEvents = function () {
+    Text.prototype.bindEvents = function () {
         var _this = this;
         this.elem.addEventListener('click', function (e) {
             e.stopPropagation();
             e.preventDefault();
+            e.cancelBubble = true;
             if (!_this.editor.editionStarted(_this.elem, _this.elem.innerText)) {
                 return false;
             }
@@ -30,7 +42,7 @@ var Editable = (function () {
             });
             var resize = function () {
                 input.style.height = 'auto';
-                input.style.height = input.scrollHeight + 'px';
+                input.style.height = input.scrollHeight + "px";
             };
             // Workaround for cut, paste, drop and keydown
             var delayedResize = function () { return window.setTimeout(resize, 0); };
@@ -40,7 +52,7 @@ var Editable = (function () {
             input.addEventListener('drop', delayedResize);
             input.addEventListener('keydown', delayedResize);
             input.style.width = 'auto';
-            input.style.height = _this.elem.offsetHeight + 'px';
+            input.style.height = _this.elem.offsetHeight + "px";
             input.style.overflowY = "hidden";
             input.style.fontSize = window.getComputedStyle(_this.elem).fontSize;
             _this.elem.parentNode.replaceChild(input, _this.elem);
@@ -48,27 +60,13 @@ var Editable = (function () {
             resize();
         }, true);
     };
-    Object.defineProperty(Editable.prototype, "value", {
+    Object.defineProperty(Text.prototype, "value", {
         get: function () {
             return this.elem.textContent;
         },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(Editable.prototype, "element", {
-        get: function () {
-            return this.elem;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Editable.prototype, "hasChanged", {
-        get: function () {
-            return this.changed;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    return Editable;
-}());
-exports.Editable = Editable;
+    return Text;
+}(editable_1.Editable));
+exports.Text = Text;

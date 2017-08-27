@@ -2,32 +2,40 @@ import {Block} from './elements/block'
 import {Line} from './elements/line'
 import {Image} from './elements/image'
 import {Editable} from './elements/editable'
+import {BgEditable} from "./elements/bg-editable";
 
 export type Options = {
     saveButton: boolean,
     selector: string,
+    bgSelector: string,
 }
 
 export class Editor {
     private editing: boolean
     private elems: Editable[]
     private selector: string = '.editable'
+    private bgSelector: string = '.bg-editable'
 
     constructor(private options: Options) {
         this.handleOptions()
 
         this.elems = []
-        const elems: NodeListOf<Element> = document.querySelectorAll(this.selector)
+
+        let elems: Array<Element> = Array.from(document.querySelectorAll(this.selector))
+        elems = elems.concat(Array.from(document.querySelectorAll(this.bgSelector)))
 
         for (let i = 0; i < elems.length; ++i) {
             let elm: Editable
+            let htmlElement: HTMLElement = <HTMLElement>elems[i];
 
-            if (elems[i].tagName === 'P') {
-                elm = new Block(<HTMLElement>elems[i], this)
+            if (htmlElement.matches(this.bgSelector)) {
+                elm = new BgEditable(htmlElement, this)
+            } else if (elems[i].tagName === 'P') {
+                elm = new Block(htmlElement, this)
             } else if (elems[i].tagName === 'IMG') {
-                elm = new Image(<HTMLElement>elems[i], this)
+                elm = new Image(htmlElement, this)
             } else {
-                elm = new Line(<HTMLElement>elems[i], this)
+                elm = new Line(htmlElement, this)
             }
 
             elm.bindEvents()

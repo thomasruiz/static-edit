@@ -1,25 +1,32 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var block_1 = require("./block");
-var line_1 = require("./line");
-var image_1 = require("./image");
+var block_1 = require("./elements/block");
+var line_1 = require("./elements/line");
+var image_1 = require("./elements/image");
+var bg_editable_1 = require("./elements/bg-editable");
 var Editor = (function () {
     function Editor(options) {
         this.options = options;
         this.selector = '.editable';
+        this.bgSelector = '.bg-editable';
         this.handleOptions();
         this.elems = [];
-        var elems = document.querySelectorAll(this.selector);
+        var elems = Array.from(document.querySelectorAll(this.selector));
+        elems = elems.concat(Array.from(document.querySelectorAll(this.bgSelector)));
         for (var i = 0; i < elems.length; ++i) {
             var elm = void 0;
-            if (elems[i].tagName === 'P') {
-                elm = new block_1.Block(elems[i], this);
+            var htmlElement = elems[i];
+            if (htmlElement.matches(this.bgSelector)) {
+                elm = new bg_editable_1.BgEditable(htmlElement, this);
+            }
+            else if (elems[i].tagName === 'P') {
+                elm = new block_1.Block(htmlElement, this);
             }
             else if (elems[i].tagName === 'IMG') {
-                elm = new image_1.Image(elems[i], this);
+                elm = new image_1.Image(htmlElement, this);
             }
             else {
-                elm = new line_1.Line(elems[i], this);
+                elm = new line_1.Line(htmlElement, this);
             }
             elm.bindEvents();
             this.elems.push(elm);

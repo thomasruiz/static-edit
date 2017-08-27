@@ -11,18 +11,18 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var editable_1 = require("./editable");
-var Image = (function (_super) {
-    __extends(Image, _super);
-    function Image() {
+var FileUpload = (function (_super) {
+    __extends(FileUpload, _super);
+    function FileUpload() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    Image.prototype.createField = function () {
+    FileUpload.prototype.createField = function () {
         var input = document.createElement('input');
         input.type = 'file';
         input.style.display = 'none';
         return input;
     };
-    Image.prototype.bindEvents = function () {
+    FileUpload.prototype.bindEvents = function () {
         var _this = this;
         this.elem.addEventListener('click', function (e) {
             e.stopPropagation();
@@ -34,9 +34,9 @@ var Image = (function (_super) {
                     var reader = new FileReader();
                     reader.addEventListener('loadend', function (e) {
                         var newValue = e.target.result;
-                        var oldValue = _this.elem.src;
-                        _this.elem.src = newValue;
-                        _this.elem.dataset.fileName = uploadedFile.name;
+                        var oldValue = _this.value;
+                        _this.changeValue(newValue, uploadedFile.name);
+                        _this.changed = true;
                         _this.elem.parentNode.removeChild(file);
                         setTimeout(function () { return _this.editor.editionEnded(_this.elem, oldValue, newValue); }, 100);
                     });
@@ -45,8 +45,8 @@ var Image = (function (_super) {
             });
             _this.elem.parentNode.appendChild(file);
             file.click();
-        }, true);
+        });
     };
-    return Image;
+    return FileUpload;
 }(editable_1.Editable));
-exports.Image = Image;
+exports.FileUpload = FileUpload;

@@ -10,7 +10,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var editable_1 = require("./editable");
+var text_1 = require("./text");
 var Line = (function (_super) {
     __extends(Line, _super);
     function Line() {
@@ -20,5 +20,5 @@ var Line = (function (_super) {
         return document.createElement('input');
     };
     return Line;
-}(editable_1.Editable));
+}(text_1.Text));
 exports.Line = Line;
