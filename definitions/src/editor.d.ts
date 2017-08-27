@@ -11,7 +11,7 @@ export declare class Editor {
     private bgSelector;
     constructor(options: Options);
     handleOptions(): void;
-    private createSaveButton();
     editionStarted(elem: HTMLElement, oldValue: string): boolean;
     editionEnded(elem: HTMLElement, oldValue: string, newValue: string): void;
+    private createSaveButton();
 }

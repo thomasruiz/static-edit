@@ -4,8 +4,9 @@ export declare abstract class Editable {
     protected editor: Editor;
     protected changed: boolean;
     constructor(elem: HTMLElement, editor: Editor);
-    abstract createField(): HTMLInputElement;
-    abstract bindEvents(): void;
     readonly element: HTMLElement;
     readonly hasChanged: boolean;
+    readonly abstract value: string;
+    abstract createField(): HTMLInputElement;
+    abstract bindEvents(): void;
 }

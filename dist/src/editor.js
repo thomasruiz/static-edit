@@ -40,6 +40,18 @@ var Editor = (function () {
             this.selector = this.options.selector;
         }
     };
+    Editor.prototype.editionStarted = function (elem, oldValue) {
+        if (this.editing) {
+            return false;
+        }
+        this.editing = true;
+        window.dispatchEvent(new CustomEvent('static_edit.editing', { detail: { elem: elem, oldValue: oldValue } }));
+        return true;
+    };
+    Editor.prototype.editionEnded = function (elem, oldValue, newValue) {
+        this.editing = false;
+        window.dispatchEvent(new CustomEvent('static_edit.edited', { detail: { elem: elem, oldValue: oldValue, newValue: newValue } }));
+    };
     Editor.prototype.createSaveButton = function () {
         var _this = this;
         var button = document.createElement('button');
@@ -53,18 +65,6 @@ var Editor = (function () {
         button.style.top = '20px';
         button.style.left = '20px';
         document.body.appendChild(button);
-    };
-    Editor.prototype.editionStarted = function (elem, oldValue) {
-        if (this.editing) {
-            return false;
-        }
-        this.editing = true;
-        window.dispatchEvent(new CustomEvent('static_edit.editing', { detail: { elem: elem, oldValue: oldValue } }));
-        return true;
-    };
-    Editor.prototype.editionEnded = function (elem, oldValue, newValue) {
-        this.editing = false;
-        window.dispatchEvent(new CustomEvent('static_edit.edited', { detail: { elem: elem, oldValue: oldValue, newValue: newValue } }));
     };
     return Editor;
 }());

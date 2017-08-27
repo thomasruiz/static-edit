@@ -16,6 +16,13 @@ var Text = (function (_super) {
     function Text() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
+    Object.defineProperty(Text.prototype, "value", {
+        get: function () {
+            return this.elem.textContent;
+        },
+        enumerable: true,
+        configurable: true
+    });
     Text.prototype.bindEvents = function () {
         var _this = this;
         this.elem.addEventListener('click', function (e) {
@@ -60,13 +67,6 @@ var Text = (function (_super) {
             resize();
         }, true);
     };
-    Object.defineProperty(Text.prototype, "value", {
-        get: function () {
-            return this.elem.textContent;
-        },
-        enumerable: true,
-        configurable: true
-    });
     return Text;
 }(editable_1.Editable));
 exports.Text = Text;
